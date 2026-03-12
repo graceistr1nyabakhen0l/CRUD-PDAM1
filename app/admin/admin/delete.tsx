@@ -1,4 +1,3 @@
-// app/admin/admin/delete.tsx
 "use client"
 import { Admin } from "@/app/types";
 import { useRouter } from "next/navigation";
@@ -15,7 +14,10 @@ export default function DeleteAdmin({ selectedData }: { selectedData: Admin }) {
             const token = getCookie("accessToken");
             const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/admins/${selectedData.id}`, {
                 method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {
+                    "APP-KEY": process.env.NEXT_PUBLIC_APP_KEY || "",
+                    "Authorization": `Bearer ${token}`
+                }
             });
             if (res.ok) {
                 router.refresh();
