@@ -19,6 +19,7 @@ export default function DeleteAdmin({ selectedData }: { selectedData: Admin }) {
                     "Authorization": `Bearer ${token}`
                 }
             });
+            
             if (res.ok) {
                 router.refresh();
                 alert("Admin dihapus!");
