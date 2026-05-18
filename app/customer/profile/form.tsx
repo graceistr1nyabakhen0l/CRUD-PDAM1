@@ -1,38 +1,30 @@
 "use client";
 
 import { useState } from "react";
-
-// Definisikan tipe data sesuai dengan data Admin
-type AdminData = {
-    id: number;
-    name: string;
-    username: string;
-    role: string;
-};
+import { customer } from "@/app/types";
 
 type Props = {
-    admin: AdminData;
+    customer: customer;
 };
 
-export default function AdminProfileForm({ admin }: Props) {
+export default function CustomerProfileForm({ customer }: Props) {
     const [isEdit, setIsEdit] = useState(false);
 
     const [profile, setProfile] = useState({
-        name: admin?.name || "",
-        username: admin?.username || "",
+        name: customer?.name || "",
+        username: customer?.user?.username || customer?.username || "",
+        phone: customer?.phone || "",
     });
 
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">
-                    Account Information
-                </h3>
+                <h3 className="text-sm font-bold text-emerald-800/40 uppercase tracking-widest">Personal Data</h3>
 
                 {!isEdit ? (
                     <button
                         onClick={() => setIsEdit(true)}
-                        className="px-6 py-2 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-100"
+                        className="px-6 py-2 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all active:scale-95 shadow-lg shadow-emerald-200"
                     >
                         Edit Profile
                     </button>
@@ -41,8 +33,9 @@ export default function AdminProfileForm({ admin }: Props) {
                         <button
                             onClick={() => {
                                 setProfile({
-                                    name: admin.name,
-                                    username: admin.username,
+                                    name: customer.name,
+                                    username: customer.user?.username || customer.username || "",
+                                    phone: customer.phone,
                                 });
                                 setIsEdit(false);
                             }}
@@ -52,13 +45,12 @@ export default function AdminProfileForm({ admin }: Props) {
                         </button>
                         <button
                             onClick={() => {
-                                // Ganti dengan logic update API admin di sini
-                                console.log("Updating admin profile:", profile);
+                                console.log("Updating customer:", profile);
                                 setIsEdit(false);
                             }}
-                            className="px-6 py-2 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-100"
+                            className="px-6 py-2 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all active:scale-95 shadow-lg shadow-emerald-200"
                         >
-                            Save Changes
+                            Save
                         </button>
                     </div>
                 )}
@@ -67,7 +59,7 @@ export default function AdminProfileForm({ admin }: Props) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* NAME */}
                 <div className="flex flex-col gap-2">
-                    <label className="text-sm font-bold text-slate-600 ml-1">Admin Name</label>
+                    <label className="text-sm font-bold text-slate-600 ml-1">Full Name</label>
                     <input
                         type="text"
                         value={profile.name}
@@ -75,38 +67,39 @@ export default function AdminProfileForm({ admin }: Props) {
                         onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                         className={`px-4 py-3 rounded-2xl border transition-all duration-300
                             ${isEdit
-                                ? "bg-white border-indigo-200 focus:ring-4 focus:ring-indigo-100 outline-none shadow-sm"
-                                : "bg-slate-50 border-transparent text-slate-500 cursor-not-allowed"}`}
+                                ? "bg-white border-emerald-200 focus:ring-4 focus:ring-emerald-100 outline-none shadow-sm"
+                                : "bg-emerald-50/30 border-transparent text-slate-500 cursor-not-allowed"}`}
                     />
                 </div>
 
                 {/* USERNAME */}
                 <div className="flex flex-col gap-2">
-                    <label className="text-sm font-bold text-slate-600 ml-1">Username / ID</label>
+                    <label className="text-sm font-bold text-slate-600 ml-1">Username</label>
                     <input
                         type="text"
-                        value={profile.username}
+                        value={profile.name || ""} // Tambahkan || ""
                         disabled={!isEdit}
                         onChange={(e) => setProfile({ ...profile, username: e.target.value })}
                         className={`px-4 py-3 rounded-2xl border transition-all duration-300
                             ${isEdit
-                                ? "bg-white border-indigo-200 focus:ring-4 focus:ring-indigo-100 outline-none shadow-sm"
-                                : "bg-slate-50 border-transparent text-slate-500 cursor-not-allowed"}`}
+                                ? "bg-white border-emerald-200 focus:ring-4 focus:ring-emerald-100 outline-none shadow-sm"
+                                : "bg-emerald-50/30 border-transparent text-slate-500 cursor-not-allowed"}`}
                     />
                 </div>
 
-                {/* ROLE (Read Only - Admin tidak bisa ubah role sendiri) */}
+                {/* PHONE */}
                 <div className="flex flex-col gap-2 md:col-span-2">
-                    <label className="text-sm font-bold text-slate-600 ml-1">Account Role</label>
+                    <label className="text-sm font-bold text-slate-600 ml-1">Phone Number</label>
                     <input
-                        type="text"
-                        value={admin.role || "Administrator"}
-                        disabled={true}
-                        className="px-4 py-3 rounded-2xl border bg-slate-50 border-transparent text-slate-400 cursor-not-allowed italic"
+                        type="tel"
+                        value={profile.phone}
+                        disabled={!isEdit}
+                        onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                        className={`px-4 py-3 rounded-2xl border transition-all duration-300
+                            ${isEdit
+                                ? "bg-white border-emerald-200 focus:ring-4 focus:ring-emerald-100 outline-none shadow-sm"
+                                : "bg-emerald-50/30 border-transparent text-slate-500 cursor-not-allowed"}`}
                     />
-                    <p className="text-[10px] text-slate-400 ml-1 italic">
-                        *Role permissions are managed by system security.
-                    </p>
                 </div>
             </div>
         </div>

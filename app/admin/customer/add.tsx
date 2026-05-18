@@ -17,7 +17,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { getCookies } from "@/lib/server-cookie" // Pastikan fungsi ini bisa dipanggil di client atau gunakan document.cookie
+import { Sparkles, UserPlus, Heart } from "lucide-react"
 
 const AddCustomer = ({
     serviceData,
@@ -62,22 +62,18 @@ const AddCustomer = ({
         }
 
         try {
-            // Kita ambil token (Sesuaikan cara ambil cookie di project kamu)
-            // Jika getCookies hanya untuk server, kamu bisa pakai library 'js-cookie' 
-            // atau bypass sementara jika API belum pakai Token.
             const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/customers`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "APP-KEY": process.env.NEXT_PUBLIC_APP_KEY || "",
-                    // "Authorization": `Bearer ${token}` // Buka ini jika butuh login
                 },
                 body: JSON.stringify(payload),
             })
 
             if (response.ok) {
                 setOpen(false)
-                router.refresh() // Supaya data di tabel otomatis nambah
+                router.refresh()
                 alert("Berhasil menambah customer!")
             } else {
                 const errorData = await response.json()
@@ -97,81 +93,102 @@ const AddCustomer = ({
                 <DialogTrigger asChild>
                     <Button
                         onClick={openModal}
-                        className="bg-slate-900 hover:bg-sky-600 text-white rounded-full px-8 py-6 shadow-xl hover:shadow-sky-200 transition-all font-bold active:scale-95"
+                        className="bg-[#1A1F2C] hover:bg-indigo-900 text-white rounded-full px-8 py-7 shadow-xl transition-all font-bold active:scale-95 flex items-center gap-2 tracking-tight"
                     >
-                        <span className="mr-2 text-lg">+</span> Add Data Customer
+                        <UserPlus size={18} strokeWidth={2.5} />
+                        Add Data Customer
                     </Button>
                 </DialogTrigger>
 
-                <DialogContent className="sm:max-w-md rounded-[2.5rem] border-none shadow-2xl overflow-hidden p-0">
-                    <div className="bg-gradient-to-r from-sky-500 to-blue-600 p-8 text-white">
-                        <DialogHeader>
-                            <DialogTitle className="text-2xl font-extrabold text-white">New Customer ✨</DialogTitle>
-                            <DialogDescription className="text-sky-100 italic">
-                                Let's add a new member to our community!
+                {/* Modal Container dengan Rounded Super Halus */}
+                <DialogContent className="sm:max-w-md rounded-[3rem] border-none shadow-2xl overflow-hidden p-0 bg-white">
+
+                    {/* Header: Soft Gradient ala Referensi (Blue to Purple) */}
+                    <div className="bg-gradient-to-br from-[#E0F2FF] via-[#F0E7FF] to-white p-10 pb-6 relative">
+                        {/* Aksen Ikon Kecil yang Lucu */}
+                        <div className="absolute top-8 right-10">
+                            <Sparkles className="text-indigo-300 animate-pulse" size={24} />
+                        </div>
+                        <div className="absolute top-12 right-20 opacity-20">
+                            <Heart className="text-pink-400 fill-pink-400" size={16} />
+                        </div>
+
+                        <DialogHeader className="relative z-10 text-center sm:text-left">
+                            <DialogTitle className="text-3xl font-black text-[#2D3748] tracking-tight flex items-center gap-2">
+                                New Customer <span className="text-indigo-400">✨</span>
+                            </DialogTitle>
+                            <DialogDescription className="text-slate-400 font-medium italic mt-1 pl-1">
+                                — Let's grow the community!
                             </DialogDescription>
                         </DialogHeader>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="p-8 bg-white">
-                        <div className="space-y-5 max-h-[50vh] overflow-y-auto px-1 scrollbar-hide">
+                    <form onSubmit={handleSubmit} className="p-10 pt-4 bg-white">
+                        <div className="space-y-5 max-h-[55vh] overflow-y-auto px-2 scrollbar-hide">
                             {[
-                                { label: "Username", id: "username", val: username, set: setUsername, type: "text", icon: "👤" },
-                                { label: "Password", id: "password", val: password, set: setPassword, type: "password", icon: "🔑" },
-                                { label: "Full Name", id: "name", val: name, set: setName, type: "text", icon: "📝" },
-                                { label: "Customer ID", id: "customerNumber", val: customerNumber, set: setCustomerNumber, type: "text", icon: "🆔" },
-                                { label: "Phone", id: "phone", val: phone, set: setPhone, type: "text", icon: "📞" },
-                                { label: "Address", id: "address", val: address, set: setAddress, type: "text", icon: "🏠" },
+                                { label: "FULL NAME", id: "name", val: name, set: setName, type: "text", icon: "👤", color: "bg-indigo-50 text-indigo-500" },
+                                { label: "USERNAME", id: "username", val: username, set: setUsername, type: "text", icon: "@", color: "bg-blue-50 text-blue-500" },
+                                { label: "PASSWORD", id: "password", val: password, set: setPassword, type: "password", icon: "🔑", color: "bg-purple-50 text-purple-500" },
+                                { label: "CUSTOMER ID", id: "customerNumber", val: customerNumber, set: setCustomerNumber, type: "text", icon: "🆔", color: "bg-slate-50 text-slate-500" },
+                                { label: "PHONE NUMBER", id: "phone", val: phone, set: setPhone, type: "text", icon: "📞", color: "bg-cyan-50 text-cyan-500" },
+                                { label: "ADDRESS", id: "address", val: address, set: setAddress, type: "text", icon: "🏠", color: "bg-rose-50 text-rose-500" },
                             ].map((field) => (
-                                <div key={field.id} className="space-y-1.5">
-                                    <Label htmlFor={field.id} className="text-xs font-bold text-slate-400 uppercase ml-2">
+                                <div key={field.id} className="space-y-2 group">
+                                    <Label htmlFor={field.id} className="text-[10px] font-black text-slate-300 uppercase tracking-[0.15em] ml-3 transition-colors group-focus-within:text-indigo-400">
                                         {field.label}
                                     </Label>
-                                    <div className="relative group">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 grayscale group-focus-within:grayscale-0 transition-all">
+                                    <div className="relative">
+                                        <div className={`absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 ${field.color} rounded-2xl flex items-center justify-center text-sm font-bold shadow-sm transition-transform group-focus-within:scale-110`}>
                                             {field.icon}
-                                        </span>
+                                        </div>
                                         <Input
                                             id={field.id}
                                             type={field.type}
                                             value={field.val}
                                             onChange={(e) => field.set(e.target.value)}
                                             required={field.id !== "phone" && field.id !== "address"}
-                                            className="pl-12 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-sky-100 transition-all py-6"
+                                            placeholder="..."
+                                            className="pl-14 rounded-[1.5rem] border-slate-100 bg-[#F8FAFC] focus:bg-white focus:ring-[5px] focus:ring-indigo-50 focus:border-indigo-200 transition-all py-7 font-semibold text-slate-700 placeholder:text-slate-300"
                                         />
                                     </div>
                                 </div>
                             ))}
 
-                            <div className="space-y-1.5">
-                                <Label htmlFor="service" className="text-xs font-bold text-slate-400 uppercase ml-2">Service</Label>
-                                <select
-                                    id="service"
-                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-3.5 text-sm focus:ring-4 focus:ring-sky-100 outline-none transition-all"
-                                    value={serviceId}
-                                    onChange={(e) => setServiceId(Number(e.target.value))}
-                                    required
-                                >
-                                    <option value="">Select Service Type</option>
-                                    {serviceData.map((service) => (
-                                        <option key={service.id} value={service.id}>{service.name}</option>
-                                    ))}
-                                </select>
+                            <div className="space-y-2">
+                                <Label htmlFor="service" className="text-[10px] font-black text-slate-300 uppercase tracking-[0.15em] ml-3">Service Type</Label>
+                                <div className="relative">
+                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center text-sm shadow-sm">
+                                        💎
+                                    </div>
+                                    <select
+                                        id="service"
+                                        className="w-full pl-14 bg-[#F8FAFC] border border-slate-100 rounded-[1.5rem] p-4 text-sm font-bold text-slate-700 focus:ring-[5px] focus:ring-indigo-50 outline-none transition-all appearance-none cursor-pointer"
+                                        value={serviceId}
+                                        onChange={(e) => setServiceId(Number(e.target.value))}
+                                        required
+                                    >
+                                        <option value="">Select Category</option>
+                                        {serviceData.map((service) => (
+                                            <option key={service.id} value={service.id}>{service.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
-                        <DialogFooter className="mt-8 gap-3 sm:justify-center">
+                        {/* Footer: Menggunakan tombol Dark ala Referensi */}
+                        <DialogFooter className="mt-10 gap-3 flex-row sm:justify-center">
                             <DialogClose asChild>
-                                <Button variant="ghost" type="button" disabled={loading} className="rounded-2xl px-6 font-semibold">
+                                <Button variant="ghost" type="button" disabled={loading} className="rounded-full px-8 font-bold text-slate-400 hover:bg-slate-50">
                                     Cancel
                                 </Button>
                             </DialogClose>
                             <Button
                                 type="submit"
                                 disabled={loading}
-                                className="bg-sky-500 hover:bg-sky-600 text-white rounded-2xl px-10 font-bold shadow-lg shadow-sky-200"
+                                className="bg-[#1A1F2C] hover:bg-indigo-900 text-white rounded-full px-12 font-black shadow-xl shadow-indigo-100 transition-all active:scale-95 py-6 tracking-tight"
                             >
-                                {loading ? "✨ Saving..." : "Save Data"}
+                                {loading ? "✨ Saving..." : "Create Customer ✨"}
                             </Button>
                         </DialogFooter>
                     </form>

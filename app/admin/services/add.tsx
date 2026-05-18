@@ -1,4 +1,4 @@
-"use client"; //tanda kalau dia client component
+"use client";
 
 import { getCookie } from "@/lib/client-cookies";
 import { FormEvent, useState } from "react";
@@ -15,9 +15,9 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Plus, Sparkles, Layers } from "lucide-react";
 
 const AddService = () => {
     const router = useRouter()
@@ -40,8 +40,7 @@ const AddService = () => {
             e.preventDefault()
             const token = await getCookie('accessToken');
             const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/services`;
-            console.log(url);
-            
+
             const playload = JSON.stringify({
                 name,
                 min_usage,
@@ -53,7 +52,7 @@ const AddService = () => {
                 method: "POST",
                 headers: {
                     "APP-KEY": process.env.NEXT_PUBLIC_APP_KEY || "",
-                    "Authorization": `Bearer  ${token}`,
+                    "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
                 body: playload
@@ -75,78 +74,91 @@ const AddService = () => {
             toast.error(`Sorry, something went wrong, ${error}`)
         }
     }
-   // ... (keep your imports and logic)
 
     return (
         <div>
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
-                    <Button 
-                        onClick={openModal} 
-                        className="bg-orange-500 hover:bg-orange-600 text-white rounded-full px-8 py-6 shadow-lg shadow-orange-200 transition-all active:scale-95 font-bold"
+                    <Button
+                        onClick={openModal}
+                        className="bg-gradient-to-r from-[#a78bfa] to-[#f4aebb] hover:opacity-90 text-white rounded-[1.5rem] px-8 py-7 shadow-lg shadow-purple-100 transition-all active:scale-95 font-bold border-2 border-white"
                     >
-                        <span className="mr-2 text-xl">+</span> Add Data Service
+                        <Plus className="mr-2 w-5 h-5" /> Add Data Service
                     </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-md rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden">
-                    <div className="bg-gradient-to-br from-orange-400 to-amber-500 p-8 text-white">
+
+                <DialogContent className="sm:max-w-md rounded-[3rem] border-none shadow-2xl p-0 overflow-hidden bg-[#f8f9fd]">
+                    {/* Header dengan Gradasi Pastel Sesuai Tema Profil */}
+                    <div className="bg-gradient-to-br from-[#f2e7fe] via-[#fdf2f8] to-[#e6f4fe] p-10 text-[#4a5568] relative">
+                        <div className="absolute top-4 right-8 opacity-20">
+                            <Sparkles size={40} className="text-[#a78bfa]" />
+                        </div>
                         <DialogHeader>
-                            <DialogTitle className="text-2xl font-black">New Service ✨</DialogTitle>
-                            <DialogDescription className="text-orange-50 opacity-90 italic">
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="p-2 bg-white/60 backdrop-blur-md rounded-xl shadow-sm">
+                                    <Layers className="text-[#a78bfa] w-5 h-5" />
+                                </div>
+                                <DialogTitle className="text-2xl font-black tracking-tight">New Service ✨</DialogTitle>
+                            </div>
+                            <DialogDescription className="text-[#a0aec0] font-medium italic">
                                 Buat kategori layanan baru yang menarik.
                             </DialogDescription>
                         </DialogHeader>
                     </div>
-                    
-                    <form onSubmit={handleSubmit} className="p-8 space-y-6 bg-white">
-                        <div className="space-y-4">
-                            <div className="space-y-1">
-                                <Label className="ml-2 text-[10px] font-bold uppercase text-slate-400">Service Name</Label>
-                                <Input 
-                                    className="rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-orange-100 py-6 transition-all" 
+
+                    {/* Body Form */}
+                    <form onSubmit={handleSubmit} className="p-10 space-y-6 bg-white rounded-t-[3rem] -mt-6 relative z-10 shadow-[0_-20px_50px_rgba(0,0,0,0.02)]">
+                        <div className="space-y-5">
+                            <div className="space-y-2 group">
+                                <Label className="ml-3 text-[11px] font-black uppercase tracking-widest text-[#cbd5e0] group-focus-within:text-[#a78bfa] transition-colors">Service Name</Label>
+                                <Input
+                                    className="rounded-2xl border-[#f1f5f9] bg-[#f8fafc] focus:bg-white focus:ring-4 focus:ring-purple-50 py-7 px-5 transition-all text-[#4a5568] font-medium placeholder:text-[#cbd5e0]"
                                     placeholder="Contoh: Domestik A"
-                                    value={name} 
-                                    onChange={(e) => setName(e.target.value)} 
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
                                 />
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <Label className="ml-2 text-[10px] font-bold uppercase text-slate-400">Price (Rp)</Label>
-                                    <Input 
+                            <div className="grid grid-cols-2 gap-5">
+                                <div className="space-y-2 group">
+                                    <Label className="ml-3 text-[11px] font-black uppercase tracking-widest text-[#cbd5e0] group-focus-within:text-[#f4aebb] transition-colors">Price (Rp)</Label>
+                                    <Input
                                         type="number"
-                                        className="rounded-2xl border-slate-100 bg-slate-50 py-6 focus:ring-4 focus:ring-orange-100 transition-all" 
-                                        value={price} 
-                                        onChange={(e) => setPrice(Number(e.target.value))} 
+                                        className="rounded-2xl border-[#f1f5f9] bg-[#f8fafc] py-7 px-5 focus:ring-4 focus:ring-pink-50 transition-all text-[#4a5568] font-medium"
+                                        value={price}
+                                        onChange={(e) => setPrice(Number(e.target.value))}
                                     />
                                 </div>
-                                <div className="space-y-1">
-                                    <Label className="ml-2 text-[10px] font-bold uppercase text-slate-400">Min Usage</Label>
-                                    <Input 
+                                <div className="space-y-2 group">
+                                    <Label className="ml-3 text-[11px] font-black uppercase tracking-widest text-[#cbd5e0] group-focus-within:text-[#a78bfa] transition-colors">Min Usage</Label>
+                                    <Input
                                         type="number"
-                                        className="rounded-2xl border-slate-100 bg-slate-50 py-6 focus:ring-4 focus:ring-orange-100 transition-all" 
-                                        value={min_usage} 
-                                        onChange={(e) => setMinUsage(Number(e.target.value))} 
+                                        className="rounded-2xl border-[#f1f5f9] bg-[#f8fafc] py-7 px-5 focus:ring-4 focus:ring-purple-50 transition-all text-[#4a5568] font-medium"
+                                        value={min_usage}
+                                        onChange={(e) => setMinUsage(Number(e.target.value))}
                                     />
                                 </div>
                             </div>
 
-                            <div className="space-y-1">
-                                <Label className="ml-2 text-[10px] font-bold uppercase text-slate-400">Max Usage</Label>
-                                <Input 
+                            <div className="space-y-2 group">
+                                <Label className="ml-3 text-[11px] font-black uppercase tracking-widest text-[#cbd5e0] group-focus-within:text-[#a78bfa] transition-colors">Max Usage</Label>
+                                <Input
                                     type="number"
-                                    className="rounded-2xl border-slate-100 bg-slate-50 py-6 focus:ring-4 focus:ring-orange-100 transition-all" 
-                                    value={max_usage} 
-                                    onChange={(e) => setMaxUsage(Number(e.target.value))} 
+                                    className="rounded-2xl border-[#f1f5f9] bg-[#f8fafc] py-7 px-5 focus:ring-4 focus:ring-purple-50 transition-all text-[#4a5568] font-medium"
+                                    value={max_usage}
+                                    onChange={(e) => setMaxUsage(Number(e.target.value))}
                                 />
                             </div>
                         </div>
 
-                        <DialogFooter className="gap-3 sm:justify-center mt-4">
+                        <DialogFooter className="gap-3 sm:justify-center mt-6 pt-2">
                             <DialogClose asChild>
-                                <Button variant="ghost" className="rounded-2xl font-bold text-slate-400">Cancel</Button>
+                                <Button variant="ghost" className="rounded-2xl font-bold text-[#a0aec0] hover:text-[#4a5568] hover:bg-[#f8fafc]">Cancel</Button>
                             </DialogClose>
-                            <Button type="submit" className="bg-slate-900 hover:bg-orange-600 text-white rounded-2xl px-8 font-black shadow-lg shadow-slate-200">
+                            <Button
+                                type="submit"
+                                className="bg-[#2d3748] hover:bg-[#1a202c] text-white rounded-2xl px-10 py-6 font-black shadow-xl shadow-slate-200 transition-all active:scale-95"
+                            >
                                 Save Service
                             </Button>
                         </DialogFooter>

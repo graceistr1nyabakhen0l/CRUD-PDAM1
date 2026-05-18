@@ -28,13 +28,13 @@ export const items = [
         icon: Toolbox,
     },
     {
-        title: "Bill",
-        url: "#",
+        title: "Bills",
+        url: "/admin/bills",
         icon: Receipt,
     },
     {
         title: "Payments",
-        url: "#",
+        url: "/admin/payments",
         icon: Banknote,
     },
 ]

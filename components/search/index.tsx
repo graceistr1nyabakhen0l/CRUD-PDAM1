@@ -34,7 +34,7 @@ const Search = ({ search, url }: Props) => { // 2. Ambil url dari props
                 type="text"
                 value={keyword}
                 onChange={e => setKeyword(e.target.value)}
-                placeholder="Search customers..."
+                placeholder="Keyword of search"
                 onKeyUp={event => handleSearch(event)}
                 className="w-full border border-gray-300 rounded-md p-2 bg-white text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
             />

@@ -1,12 +1,12 @@
 "use client"
-import { Services } from "@/app/types" // Gunakan tipe Services
+import { Services } from "@/app/types"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { getCookie } from "cookies-next" // Sesuaikan dengan library cookie yang kamu pakai
+import { getCookie } from "cookies-next"
 import { useState } from "react"
-import { toast } from "react-toastify"
+import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import { Loader2, Trash2 } from "lucide-react"
+import { Loader2, Trash2, AlertCircle, Sparkles, X } from "lucide-react"
 
 const DeleteService = ({ selectedData }: { selectedData: Services }) => {
     const router = useRouter()
@@ -19,7 +19,6 @@ const DeleteService = ({ selectedData }: { selectedData: Services }) => {
             setIsLoading(true)
 
             const token = getCookie('accessToken')
-            // Endpoint diubah menjadi /services sesuai konteks layanan
             const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/services/${selectedData.id}`
             const response = await fetch(url, {
                 method: "DELETE",
@@ -29,18 +28,17 @@ const DeleteService = ({ selectedData }: { selectedData: Services }) => {
                 }
             })
 
-            // Cek jika response kosong/bukan JSON untuk menghindari error parsing
             const result = await response.json()
 
             if (response.ok && result?.success) {
-                toast.success(result.message || "Layanan berhasil dihapus")
+                toast.success("Layanan berhasil dihapus ✨")
                 setOpen(false)
-                router.refresh() // Refresh data di server component
+                router.refresh()
             } else {
-                toast.warning(result.message || `Gagal: Server merespon ${response.status}`)
+                toast.warning("Gagal menghapus data")
             }
         } catch (error) {
-            toast.error("Gagal menghapus data layanan")
+            toast.error("Terjadi kesalahan jaringan")
         } finally {
             setIsLoading(false)
         }
@@ -49,34 +47,67 @@ const DeleteService = ({ selectedData }: { selectedData: Services }) => {
     return (
         <AlertDialog open={open} onOpenChange={setOpen}>
             <AlertDialogTrigger asChild>
-                {/* Ikon sampah di dalam card layanan */}
-                <Button variant="ghost" className="h-9 w-9 p-0 rounded-xl hover:bg-red-50 hover:text-red-500 transition-colors">
-                    <Trash2 className="w-5 h-5 text-slate-400 group-hover:text-red-500" />
+                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-2xl hover:bg-slate-50 group transition-all duration-300">
+                    <Trash2 className="w-5 h-5 text-slate-300 group-hover:text-slate-600 transition-colors" />
                 </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent className="rounded-[2.5rem] border-none p-8 bg-white">
-                <div className="flex flex-col items-center text-center space-y-4">
-                    <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center text-2xl animate-pulse">⚠️</div>
-                    <AlertDialogHeader>
-                        {/* Nama diubah menjadi Service */}
-                        <AlertDialogTitle className="text-xl font-bold text-slate-800">Hapus Layanan?</AlertDialogTitle>
-                        <AlertDialogDescription className="text-slate-500">
-                            Layanan <span className="font-bold text-red-500">"{selectedData.name}"</span> akan dihapus permanen dan tidak bisa dikembalikan.
+
+            <AlertDialogContent className="rounded-[3rem] border-none p-0 overflow-hidden bg-white max-w-[420px] shadow-2xl block">
+
+                {/* 1. HEADER: Chic & Playful Gradient */}
+                <div className="bg-gradient-to-br from-[#F0F7FF] via-[#F5F3FF] to-white pt-14 pb-8 flex flex-col items-center relative">
+                    <button
+                        onClick={() => setOpen(false)}
+                        className="absolute right-7 top-7 p-2 rounded-full hover:bg-white/50 transition-colors text-slate-400"
+                    >
+                        <X size={20} />
+                    </button>
+
+                    <Sparkles className="absolute top-10 right-14 text-indigo-300 animate-pulse" size={20} />
+
+                    {/* Icon Container with Glassmorphism effect */}
+                    <div className="w-20 h-20 bg-white rounded-[2.2rem] shadow-xl shadow-indigo-100/50 flex items-center justify-center mb-6 border border-white">
+                        <div className="w-14 h-14 bg-slate-50 rounded-[1.5rem] flex items-center justify-center">
+                            <AlertCircle className="text-indigo-400 w-8 h-8" />
+                        </div>
+                    </div>
+
+                    <AlertDialogHeader className="px-10 text-center space-y-3">
+                        <AlertDialogTitle className="text-3xl font-black text-[#1A1F2C] tracking-tight">
+                            Hapus Layanan?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-slate-400 font-medium leading-relaxed text-[15px]">
+                            Layanan <span className="text-indigo-500 font-black bg-indigo-50 px-2.5 py-1 rounded-xl mx-0.5 inline-block">"{selectedData.name}"</span> akan dihapus permanen.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                 </div>
-                <AlertDialogFooter className="mt-6 gap-2 sm:justify-center">
-                    <AlertDialogCancel disabled={isLoading} className="rounded-xl border-none bg-slate-100 font-bold hover:bg-slate-200">
-                        Batal
+
+                {/* 2. FOOTER: Premium Navy & Soft Grey Buttons */}
+                <div className="px-10 pb-12 pt-4 flex gap-4">
+                    <AlertDialogCancel asChild>
+                        <Button
+                            variant="ghost"
+                            disabled={isLoading}
+                            className="flex-1 rounded-full bg-slate-50 text-slate-400 font-bold h-16 hover:bg-slate-100 hover:text-slate-600 transition-all text-base border-none m-0"
+                        >
+                            Batal
+                        </Button>
                     </AlertDialogCancel>
-                    <AlertDialogAction
-                        onClick={handleDelete}
-                        disabled={isLoading}
-                        className="rounded-xl bg-red-500 hover:bg-red-600 min-w-[120px] font-bold text-white transition-all active:scale-95"
-                    >
-                        {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Ya, Hapus Saja"}
+
+                    <AlertDialogAction asChild>
+                        <Button
+                            onClick={handleDelete}
+                            disabled={isLoading}
+                            className="flex-1 rounded-full bg-[#1A1F2C] hover:bg-indigo-950 h-16 font-black text-white shadow-xl shadow-indigo-100 transition-all active:scale-95 border-none text-base m-0"
+                        >
+                            {isLoading ? (
+                                <Loader2 className="w-6 h-6 animate-spin" />
+                            ) : (
+                                "Ya, Hapus"
+                            )}
+                        </Button>
                     </AlertDialogAction>
-                </AlertDialogFooter>
+                </div>
             </AlertDialogContent>
         </AlertDialog>
     )
